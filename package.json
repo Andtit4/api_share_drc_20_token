@@ -1,4 +1,12 @@
 {
+  "name": "api_share_drc_20_token",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node server.js"
+  },
   "dependencies": {
     "axios": "^1.8.4",
     "bitcoinjs-lib": "^6.1.7",
