@@ -13,6 +13,8 @@ const { AddressController } = require('./controllers/AddressController');
 const { Address } = require('./models/Address');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const { transferDRC20 } = require('./controllers/transactionController');
+
 
 // Configuration
 const app = express();
@@ -130,6 +132,10 @@ app.get('/api/addresses', addressController.getAddresses.bind(addressController)
  *         description: Erreur interne du serveur
  */
 app.get('/api/addresses/:address/transactions', addressController.getTransactions.bind(addressController));
+
+app.post('/api/drc20/transfer', transferDRC20);
+
+
 
 // Documentation Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
