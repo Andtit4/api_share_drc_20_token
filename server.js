@@ -29,7 +29,7 @@ const swaggerOptions = {
     info: {
       title: 'API Documentation',
       version: '1.0.0',
-      description: 'Documentation de l\'API pour la gestion des adresses Dogecoin',
+      description: 'Documentation de l\'API pour la gestion des adresses Dogecoin et des transactions DRC-20',
     },
     servers: [
       {
@@ -37,7 +37,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ['./routes/*.js'], // Chemin vers vos fichiers de routes
+  apis: ['./server.js'], // Chemin vers votre fichier de routes
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -88,9 +88,30 @@ const addressController = new AddressController();
  *   post:
  *     summary: Créer une nouvelle adresse
  *     tags: [Addresses]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               label:
+ *                 type: string
+ *                 description: Label pour l'adresse
  *     responses:
  *       201:
  *         description: Adresse créée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 address:
+ *                   type: string
+ *                   description: L'adresse Dogecoin créée
+ *                 privateKey:
+ *                   type: string
+ *                   description: La clé privée chiffrée
  *       500:
  *         description: Erreur interne du serveur
  */
@@ -105,6 +126,20 @@ app.post('/api/addresses', addressController.createAddress.bind(addressControlle
  *     responses:
  *       200:
  *         description: Liste des adresses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   address:
+ *                     type: string
+ *                     description: L'adresse Dogecoin
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Date de création de l'adresse
  *       500:
  *         description: Erreur interne du serveur
  */
@@ -126,6 +161,26 @@ app.get('/api/addresses', addressController.getAddresses.bind(addressController)
  *     responses:
  *       200:
  *         description: Liste des transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   txid:
+ *                     type: string
+ *                     description: ID de la transaction
+ *                   amount:
+ *                     type: number
+ *                     description: Montant de la transaction
+ *                   confirmations:
+ *                     type: integer
+ *                     description: Nombre de confirmations
+ *                   timestamp:
+ *                     type: string
+ *                     format: date-time
+ *                     description: Date et heure de la transaction
  *       404:
  *         description: Adresse non trouvée
  *       500:
@@ -133,9 +188,40 @@ app.get('/api/addresses', addressController.getAddresses.bind(addressController)
  */
 app.get('/api/addresses/:address/transactions', addressController.getTransactions.bind(addressController));
 
+/**
+ * @swagger
+ * /api/drc20/transfer:
+ *   post:
+ *     summary: Transférer des DRC-20
+ *     tags: [DRC20]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sender:
+ *                 type: string
+ *                 description: Adresse d'envoi
+ *               recepient:
+ *                 type: string
+ *                 description: Adresse de réception
+ *               ticker:
+ *                  type: string
+ *                  description: DOGE
+ *               amount:
+ *                 type: number
+ *                 description: Montant à transférer
+ *     responses:
+ *       200:
+ *         description: Transfert réussi
+ *       400:
+ *         description: Erreur de validation des données
+ *       500:
+ *         description: Erreur interne du serveur
+ */
 app.post('/api/drc20/transfer', transferDRC20);
-
-
 
 // Documentation Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
