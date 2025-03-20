@@ -53,7 +53,7 @@ API sécurisée pour la génération d'adresses Dogecoin et la gestion de tokens
 4. **Démarrer l'API :**
 
    ```bash
-   npm start
+   node server.js
    ```
 
 ---
